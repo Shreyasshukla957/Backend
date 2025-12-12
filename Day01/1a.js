@@ -32,3 +32,4 @@ import now from "./1b.js"
 // agar aap file ka extension change nahi krna chahte h toh ek package.json file bnao aur type:module krdo ab apne aap import export krne mein koi dikkat nahi hogi
 now(10,20);
 console.log("Hello Dear");
+
