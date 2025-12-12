@@ -21,5 +21,5 @@ function now (a,b){
     console.log(a*b);
 }
 
-export default now;
+export default now; 
 
