@@ -97,6 +97,9 @@ mul(5,10);
 // Time-slicing:
 // CPU time ko chhote-chhote time slots mein tod kar multiple threads ko diya jata hai.
  
+// ➡️ Time-slicing ke end par context switching hota hai
+// (Time slice khatam → CPU next thread pe switch → context switch)
+
 // Processor (CPU)
 // Actual instructions execute karta hai
 // Sirf threads ko chalata hai (directly process ko nahi)
@@ -186,3 +189,32 @@ mul(5,10);
 // DNS
 // Some compression tasks
 // ➡️ Yeh sab background threads mein chalte hain
+
+
+
+// Fragmentation:
+// Memory management problem jisme available memory hone ke baad bhi
+// uska proper use nahi ho paata, kyunki memory chhote-chhote parts
+// (fragments) mein divide ho jaati hai.
+
+// =====================
+// Internal Fragmentation:
+// =====================
+// Jab OS process ko uski requirement se zyada memory allocate kar deta hai
+// Extra memory allocated block ke ANDAR hi waste ho jaati hai
+// Ye fixed-size memory blocks (jaise paging) ki wajah se hoti hai
+// Example: process ko 18KB chahiye, block 20KB ka mil gaya → 2KB waste
+
+// =====================
+// External Fragmentation:
+// =====================
+// Jab free memory alag-alag jagah chhote blocks mein bikhri hoti hai
+// Total free memory kaafi hoti hai, par ek continuous block nahi milta
+// Is wajah se process memory mein load nahi ho pata
+// Ye variable-size allocation (jaise segmentation) ki wajah se hoti hai
+
+// =====================
+// Solutions:
+// =====================
+// Paging → external fragmentation ko avoid karta hai
+// Compaction → scattered free memory ko jod kar external fragmentation kam karta hai

@@ -53,7 +53,174 @@
 // Platform independent
 // Fast execution
 
+// setTimeout ka naam aur access window / globalThis ke paas hota hai,
+// window.settimeout se hum settimeout ko access krte h
+// window / globalThis sirf ek ENTRY POINT hai
+// setTimeout ka actual implementation JavaScript mein nahi hota
+// Ye browser ke native code (Web API) mein likha hota hai
+// lekin setTimeout ko chalane ka kaam Web APIs + Browser Process (browser mein)
+// ya libuv (Node.js mein) ke paas hota hai.
 
+// ======================================================
+// COMPLETE CHRONOLOGY: Working of Node.js 
+// “ye function JS ka nahi, host ka hai — main control de raha hoon”
+// ======================================================
+
+
+// 🟢 STEP 1: JS file start hoti hai
+// Node.js JS file load karta hai
+// V8 engine execution start karta hai
+// Call Stack mein JS code push hota hai
+
+
+// 🟢 STEP 2: V8 ko `setTimeout` milta hai
+// V8 check karta hai:
+// ❌ Ye pure JavaScript ka function nahi hai
+// ✅ Ye Node.js ka HOST-PROVIDED API hai
+
+// 👉 Yahin V8 internally samajhta hai:
+// "Ye mera JS ka kaam nahi hai"
+
+
+// 🟢 STEP 3: V8 decision nahi leta, sirf HANDOFF karta hai
+// V8 async ka logic decide nahi karta
+// V8 sirf control Node.js ke native (C++) layer ko deta hai
+
+// JS (V8)
+//   ↓
+// Node.js Native Bindings (C++)
+
+
+// 🟢 STEP 4: Node.js native C++ layer active hoti hai
+// Node.js bolta hai:
+// "Achha, ye timer-related kaam hai"
+// "Isko async handle karna padega"
+
+// Node.js yahan libuv ko involve karta hai
+
+
+// 🟢 STEP 5: libuv ka kaam start hota hai
+// libuv ek C library hai
+// Ye OS ke saath async kaam karti hai
+
+// libuv kya karta hai?
+// - OS timer register karta hai
+// - JS thread ko block nahi karta
+// - Background mein kaam chala deta hai
+
+// libuv  →  OS Timer / Clock
+
+
+// 🟢 STEP 6: OS side pe timer complete hota hai
+// OS bolta hai:
+// "Timer complete ho gaya"
+
+// OS → libuv ko signal deta hai
+
+
+// 🟢 STEP 7: libuv callback ko Event Loop ko deta hai
+// Callback abhi execute nahi hota
+// Ye Event Loop ke Timer Phase / Queue mein chala jata hai
+
+
+// 🟢 STEP 8: Event Loop check karta hai
+// Call Stack empty hai? ✅
+// Agar haan → callback Call Stack mein push hota hai
+
+
+// 🟢 STEP 9: V8 callback execute karta hai
+// Ab dubara V8 ka role aata hai
+// V8 callback ke andar ka JS code execute karta hai
+
+// console.log("done");
+
+
+// ======================================================
+// FINAL SUMMARY (ONE LINE)
+// ======================================================
+
+// V8 async decide nahi karta
+// V8 sirf host API dekh kar control handoff karta hai
+// Async kaam Node.js + libuv + OS handle karte hain
+// Callback wapas aakar V8 hi execute karta hai
+
+
+// ======================================================
+// BROWSER ASYNC CHRONOLOGY (WORKING OF BROWSER)
+// ======================================================
+
+
+// 🟢 STEP 1: JS code execution start
+// Browser JS file load karta hai
+// V8 engine JS execute karta hai
+// Call Stack mein synchronous code chalta hai
+
+
+// 🟢 STEP 2: V8 ko async API milti hai (e.g. setTimeout / fetch)
+// V8 check karta hai:
+// ❌ Ye pure JavaScript ka function nahi
+// ✅ Ye Browser ka HOST-PROVIDED API hai (Web API)
+
+// V8 internally samajhta hai:
+// "Ye browser ka kaam hai, mera nahi"
+
+
+// 🟢 STEP 3: V8 sirf CONTROL HANDOFF karta hai
+// V8 async logic decide nahi karta
+// V8 Browser ke native (C++) Web API layer ko control deta hai
+
+// JS (V8)
+//   ↓
+// Browser Native Web APIs (C++)
+
+
+// 🟢 STEP 4: Web APIs ka role
+// Browser bolta hai:
+// "Ye async kaam hai (timer / network / events)"
+// "Isko background mein handle karna hai"
+
+// Web APIs Browser Process ko involve karti hain
+
+
+// 🟢 STEP 5: Browser Process + OS
+// Browser ka native code OS ke resources use karta hai
+
+// Examples:
+// - Timer → OS clock
+// - fetch → OS networking stack
+// - events → browser event system
+
+// Browser → OS
+
+
+// 🟢 STEP 6: OS async kaam complete karta hai
+// OS browser ko signal deta hai
+// "Kaam complete ho gaya"
+
+
+// 🟢 STEP 7: Browser callback ko Task Queue mein daalta hai
+// Callback abhi execute nahi hota
+// Ye Task Queue / Microtask Queue mein jata hai
+
+
+// 🟢 STEP 8: Event Loop ka role
+// Call Stack empty? ✅
+// Pehle microtasks
+// Phir task queue
+// Callback Call Stack mein push hota hai
+
+
+// 🟢 STEP 9: V8 callback execute karta hai
+// Callback ke andar ka JS code V8 hi execute karta hai
+
+// ======================================================
+// BROWSER FINAL SUMMARY
+// ======================================================
+
+// V8 → sirf JS execute + handoff
+// Browser → async ka decision
+// Web APIs + OS → async handling
+// Callback execute → phir V8
 
 // -------------------------------------------------------------------
 
@@ -88,16 +255,25 @@
 
 // 🔁 Internal Flow of this Example 
 
-// 1️⃣ JS → V8
-// 2️⃣ V8 → libuv
-// 3️⃣ libuv → Thread Pool
-// 4️⃣ Thread reads file
-// 5️⃣ libuv notified
-// 6️⃣ Event Loop → callback queue
-// 7️⃣ JS executes callback
+// 1️⃣ JS code execute hota hai (V8)
+// 2️⃣ V8 host API pe aata hai → Node.js C++ layer ko handoff
+// 3️⃣ Node.js C++ layer libuv ko call karta hai
+// 4️⃣ libuv task thread pool ko deta hai
+// 5️⃣ Thread pool background mein kaam complete karta hai
+// 6️⃣ libuv completion par Event Loop ko notify karta hai
+// 7️⃣ Callback Macrotask / Callback Queue (poll phase) mein queue hota hai
+// 8️⃣ Call Stack empty hota hai
+// 9️⃣ Event Loop pehle Microtask Queue clear karta hai
+// 🔟 Event Loop macrotask uthata hai
+// 1️⃣1️⃣ V8 callback execute karta hai
 
 // 👉 JS kabhi block nahi hota
 
+// 2 types of Queues:
+// 
+// 1️⃣ Macrotask Queue / Callback Queue :- setTimeout/setInterval/fetch
+// High Priority Microtasks Queue
+// 2️⃣ Microtask Queue:- promises.then/catch/finally
 
 // -------------------------------------------------------------------
 // Example
@@ -233,3 +409,24 @@
 // 7️⃣ console.log(data) execute hota hai
 
 // 👉 JS kabhi block nahi hota
+
+// Node vs Libuv
+// Node.js
+// JavaScript runtime / platform
+// JS ko browser ke bahar chalata hai
+// APIs deta hai: fs, http, timers, crypto
+// Glue / manager ka kaam karta hai:
+// JS Engine (V8) ↔ Async system (libuv)
+// C++ mein likha hua runtime
+// Uses:
+// V8
+// libuv
+        // VS
+// Libuv
+// Low-level async I/O engine (C library)
+// Async ka actual engine
+// Kaam:
+// Event Loop
+// OS async I/O
+// Thread Pool (default 4)
+// JS ko direct nahi janta

@@ -4,7 +4,7 @@
 //     console.log(a+b);
 // }
 
-// // module.exports = sum ;
+// // module.exports = sum ;//isse hoga yeh ki ab yeh private nahi rha aur humne bta diya ki isko ab dusre file mein bhi use krna h aur isiliye isko export kr diya h
 
 // function sub (a,b){
 //     console.log(a-b);
