@@ -106,6 +106,7 @@ app.use("/user", (req, res) => {
 
 app.use("/log", (req, res, next) => {
   // log yha maintain krenge iss middleware mein , yeh har "http request" k liye log maintain krega aur next ke through front-end se aaye hue http request ke pass chala jaayega.
+  // koi opertaion perform krna hota h front-end se toh authentication ke through jaana padta h chahe (update/delete/post/patch/get) koi bhi use krna ho , toh kya authentication k liye bhi har http method par mein jakar sabke liye authentication ka code likhunga , nahi isse accha middleware mein hi likh do saare http method k liye authentication ka code middleware sab handle krlega.
   console.log(`${req.url} , ${req.method} , ${Date.now()} `);
   next();
 });
