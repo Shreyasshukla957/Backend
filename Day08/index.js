@@ -25,19 +25,13 @@ const bookstore = [
 ];
 
 app.get("/book", (req, res) => {
-  
-res.send(bookstore)
-  
+  res.send(bookstore);
 });
 
 app.get("/book/query", (req, res) => {
-  
-  bookstore.forEach((value)=>{
-    if(req.query.bookname===value.bookname)
-      res.send(value);
-
-  })
-  
+  bookstore.forEach((value) => {
+    if (req.query.bookname === value.bookname) res.send(value);
+  });
 });
 
 app.patch("/book", (req, res) => {
@@ -75,5 +69,3 @@ app.delete("/book/:id", (req, res) => {
   res.send(bookstore);
   // res.send("patch done");
 });
-
-
