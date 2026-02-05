@@ -1,0 +1,1 @@
+id: 15, food: "Fish Curry", cuisine: "Coastal Indian", price: 280

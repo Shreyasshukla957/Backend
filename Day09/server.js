@@ -1,6 +1,6 @@
 const express = require("express");
-const app = express(); 
-
+const app = express();
+const {Autho} = require("./middleware/auth")
 app.listen(4000, () => {
   console.log("Listening at port no 4000");
 });
@@ -30,24 +30,40 @@ const foodItems = [
 // user ka added food items iss AddtoCart wale mein chla jaayega
 const AddtoCart = [];
 
-app.get("/food",(req,res)=>{
-    res.status(200).send(foodItems);
-})
-
-
-app.use("/admin",(req,res,next)=>{
-  const auth = "ABCDEF";
-  const ans = auth === "ABCDEF" ? 1 : 0;
-  if(!ans){
-    res.status(403).send("Authorization failed");
-  }
-
-  next();
-})
-
-app.get("/admin",(req,res)=>{
+app.get("/food", (req, res) => {
   res.status(200).send(foodItems);
-})
+});
 
+app.use("/admin",Autho);
 
+app.get("/admin", (req, res) => {
+  res.status(200).send(foodItems);
+});
+
+app.post("/admin", (req, res) => {
+  foodItems.push(req.body);
+  res.status(201).send(foodItems);
+});
+
+app.patch("/admin", (req, res) => {
+  foodItems.forEach((value) => {
+    if(value.id === req.body.id){
+      value.id = req.body.id;
+      value.food = req.body.food;
+      value.cuisine = req.body.cuisine;
+      value.price = req.body.price;
+
+    }
+  });
+  res.status(200).send(foodItems);
+});
+
+app.delete("/admin/:id", (req, res ) => {
+  foodItems.forEach((value , index) => {
+    if(value.id === parseInt( req.params.id)){
+      foodItems.splice(index,1);
+    }
+  });
+  res.status(200).send(foodItems);
+});
 
