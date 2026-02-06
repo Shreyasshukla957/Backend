@@ -27,8 +27,7 @@ const foodItems = [
   { id: 15, food: "Fish Curry", cuisine: "Coastal Indian", price: 280 },
 ];
 
-// user ka added food items iss AddtoCart wale mein chla jaayega
-const AddtoCart = [];
+
 
 app.get("/food", (req, res) => {
   res.status(200).send(foodItems);
