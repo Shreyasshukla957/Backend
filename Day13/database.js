@@ -2,8 +2,8 @@ const { MongoClient } = require("mongodb");
 
 async function runGetStarted() {
   // Replace the uri string with your connection string
-  const uri =
-    "mongodb+srv://shreyasdb:merapassword@codingnow.vdqgxp8.mongodb.net/";
+  // const uri =
+  //   "mongodb+srv:/";
   const client = new MongoClient(uri);
 
   try {
@@ -31,12 +31,16 @@ async function runGetStarted() {
     // console.log( "inserted document =>", insertResult);
 
     // inserting multiple data to database
-    const insertResultmany = await users.insertMany(
-      { name: "Rahul", age: 29 },
-      { name: "Ram", age: 24 },
-      { name: "Radha", age: 22 },
-    );
-    console.log("inserted document =>", insertResultmany);
+    // const insertResultmany = await users.insertMany(
+    //   [{ name: "Rahul", age: 29 },
+    //   { name: "Ram", age: 24 },
+    //   { name: "Radha", age: 22 },]
+    // );
+    // console.log("inserted document =>", insertResultmany);
+
+    const filteredDocs = await users.find({name:"Rahul"}).toArray();
+     console.log("inserted document =>", filteredDocs);
+
   } finally {
     await client.close();
   }
