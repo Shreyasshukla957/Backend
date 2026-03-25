@@ -1,3 +1,23 @@
+# require() === module.exports
+
+1. `module.exports` mein jo bhi rakho — wahi `require()` return karta hai
+2. `const Detail = require('./Detail')` matlab `Detail` ab `module.exports` ki value hai
+3. Agar `module.exports = detail` (function) — toh `Detail()` directly call kar sakte ho
+4. Agar `module.exports = { detail }` (object) — toh `Detail.detail()` call karna padega
+5. Simple rule — `require()` bas `module.exports` ki **copy** uthake de deta hai
+
+
+# require() === module.exports — Example
+```js
+// Detail.js
+function detail() { console.log('Hello') }
+module.exports = detail  // function export kiya
+
+// app.js
+const Detail = require('./Detail')  // Detail = module.exports = detail function
+Detail()  // 'Hello' ✅
+```
+
 # JavaScript Class — Poora Concept (Hindi Mein) 🇮🇳
 
 ---

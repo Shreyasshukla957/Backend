@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const Detail = require("./Models/Detail");
+const {Detail} = require("./Models/Detail");
 
 async function main() {
   // let connect = await mongoose.connect(
