@@ -2,23 +2,23 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const DataSchema = new Schema({
-  Fname:{
-    type: String
+  Fname: {
+    type: String,
   },
-  Lname:{
-    type: String
+  Lname: {
+    type: String,
   },
   age: {
-    type: Number
+    type: Number,
   },
-  contact:{
-    type: Number
+  contact: {
+    type: Number,
   },
-  city:{
-    type: String
+  city: {
+    type: String,
   },
-  Gender:{
-    type: String
+  Gender: {
+    type: String,
   },
 });
 
