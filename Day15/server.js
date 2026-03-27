@@ -21,7 +21,7 @@ app.post("/register", async (req, res) => {
     await User.create(req.body);
     res.send("Registered Data Successfully");
   } catch (err) {
-    console.log("Error" + err.message);
+    res.send("Error" + err.message);
   }
 });
 
@@ -30,15 +30,39 @@ app.get("/info", async (req, res) => {
     const result = await User.find();
     res.send(result);
   } catch (err) {
-    console.log("Error" + err.message);
+    res.send("Error" + err.message);
   }
 });
 
 app.get("/user/:id", async (req, res) => {
   try {
-    let Id =await User.findById(req.params.id);
+    let Id = await User.findById(req.params.id);
     res.send(Id);
   } catch (err) {
-    console.log("Error" + err.message);
+    res.send("Error" + err.message);
   }
 });
+
+app.delete("/user/:id", async (req, res) => {
+  try {
+    let Id = await User.findOneAndDelete(req.params.id);
+    res.send("Deleted Successfully");
+  } catch (err) {
+    res.send("Error" + err.message);
+  }
+});
+
+// we can update it by giving id in params but it is not good practise as always prefer to use request body for update and post while params for delete / get .
+app.patch("/user", async (req, res) => {
+  try {
+
+    const {id , ...update} = req.body;
+
+    let Id = await User.findByIdAndUpdate(id,update);
+    res.send("Updated Successfully");
+  } catch (err) {
+    res.send("Error" + err.message);
+  }
+});
+
+// better method
