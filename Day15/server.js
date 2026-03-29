@@ -18,6 +18,17 @@ main()
 
 app.post("/register", async (req, res) => {
   try {
+
+
+    const mandaotryFile = ["Fname","age","Emailid"];
+
+    const check = Object.keys(req.body).every((keys)=>mandaotryFile.includes(keys))
+
+    if(!check){
+      throw new Error("Fields Missing");
+    }
+
+    
     await User.create(req.body);
     res.send("Registered Data Successfully");
   } catch (err) {

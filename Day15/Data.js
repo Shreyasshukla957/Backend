@@ -42,6 +42,7 @@ const DataSchema = new Schema({
     trim: true,
     lowercase: true,
     immutable: true,
+    required:true,
   },
 },{timestamps:true});
 
