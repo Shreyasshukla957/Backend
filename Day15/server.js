@@ -56,13 +56,19 @@ app.delete("/user/:id", async (req, res) => {
 app.patch("/user", async (req, res) => {
   try {
 
-    const {id , ...update} = req.body;
+    let result = Array.isArray(req.body) ? req.body : Array.of(req.body);
+    
+    for(let items of result){
+      const { id, ...update } = items;
+        // { runvalidators :true } update krne se pehle validate krega phir updation hoga
+        let Id = await User.findByIdAndUpdate(id, update, { runValidators: true });
+    }
 
-    let Id = await User.findByIdAndUpdate(id,update);
     res.send("Updated Successfully");
   } catch (err) {
     res.send("Error" + err.message);
   }
 });
 
-// better method
+// Validation    →  Data given by the user correct?
+// Authorization →  Is the user allowed to enter?

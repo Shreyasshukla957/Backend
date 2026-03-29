@@ -1,12 +1,9 @@
-const mongoose = require ("mongoose");
+const mongoose = require("mongoose");
 
-
-async function main(){
-    let connect = await mongoose.connect(
+async function main() {
+  let connect = await mongoose.connect(
     "mongodb+srvInsta",
   );
-
-  
 }
 
 module.exports = main;
