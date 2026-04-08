@@ -15,7 +15,7 @@ async function Vuser(data) {
     throw new Error("Week Password")
   }
 
-  if(data.Fname.length < 3 && data.Fname.length <= 20){
+  if(data.Fname.length <= 3 && data.Fname.length >= 20){
     throw new Error("Incorrect size of Password");
   }
 
