@@ -1,6 +1,6 @@
 const User = require("../Schema");
 const jwt = require("jsonwebtoken");
-const redisClient = require("../config/redis");
+const {redisClient} = require("../config/redis");
 
 const autho = async (req, res, next) => {
   try {
@@ -28,8 +28,8 @@ const autho = async (req, res, next) => {
     // redisClient.exists return in true or false.
     const blocked = await redisClient.exists(`token:${token}`);
 
-    if (blocked) {
-      throw new error("Invalid Token");
+    if(blocked) {
+      throw new Error("Invalid Token");
     }
 
     next();

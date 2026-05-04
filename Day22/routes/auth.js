@@ -4,7 +4,7 @@ const authRouter = express.Router();
 const bcrypt = require("bcrypt");
 const User = require("../Schema");
 const Vuser = require("../utils/valuser");
-const redisClient = require("../config/redis");
+const {redisClient} = require("../config/redis");
 const jwt = require("jsonwebtoken");
 const { autho } = require("../middleware/validation");
 
