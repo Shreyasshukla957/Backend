@@ -4,11 +4,13 @@ require("dotenv").config();
 // The client gets the API key from the environment variable `GEMINI_API_KEY`.
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-async function main() {
+async function main(history) {
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
     // this means only one message is sent fron user to the model
-    contents: "Kaise ho",
+    // contents: msg,
+
+    contents:history,
 
     // this means prior message is sent from user to the model as an context of the caht
     // contents: [
@@ -38,7 +40,7 @@ async function main() {
     //   },
     // ],
   });
-  console.log(response.text);
+  return response.text;
 }
 
-main();
+module.exports = main;
